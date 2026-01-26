@@ -7,7 +7,7 @@ import userRoutes from "./routes/user.routes.js"
 const app = express()
 
 app.use(cors({
-    origin: 'https://creat-r-client.vercel.app',
+    origin: process.env.CORS_ORIGIN,
     credentials: true
 }))
 
