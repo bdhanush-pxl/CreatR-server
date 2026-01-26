@@ -25,4 +25,4 @@ app.use('/api/users', userRoutes);
 
 
 
-export { app }
+export default app
