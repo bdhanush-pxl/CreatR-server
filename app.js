@@ -24,8 +24,19 @@ app.use(cors({
       return callback(new Error("Not allowed by CORS"));
     }
   },
-  credentials: true
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Ensure all methods are allowed
+  allowedHeaders: ["Content-Type", "Authorization"] // Allow necessary headers
 }));
+
+// Ensure preflight requests are handled
+app.options("*", (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", process.env.CORS_ORIGIN || "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  res.sendStatus(204); // No content
+});
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
