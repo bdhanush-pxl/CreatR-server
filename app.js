@@ -6,23 +6,28 @@ import userRoutes from "./routes/user.routes.js"
 
 const app = express()
 
-// 🔒 Strict CORS (no normalization, exact match only)
-const allowedOrigins = [
-  "https://creat-r-client.vercel.app",
-];
+const allowedOrigins = (process.env.CORS_ORIGIN || "")
+  .split(",")
+  .map(s => s.trim())
+  .filter(Boolean);
 
-app.use(cors({
+const corsOptions = {
   origin: (origin, cb) => {
     if (!origin) return cb(null, true); // Postman/curl
+
+    // Fail closed if env isn't set (prevents accidental open CORS with credentials)
+    if (allowedOrigins.length === 0) return cb(null, false);
+
     if (allowedOrigins.includes(origin)) return cb(null, true);
-    return cb(null, false); // don't throw Error; just disallow
+    return cb(null, false);
   },
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
-}));
+};
 
-app.options("*", cors());
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 
 
 app.use(express.json());
