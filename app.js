@@ -6,37 +6,24 @@ import userRoutes from "./routes/user.routes.js"
 
 const app = express()
 
-app.use((req, res, next) => {
-  console.log("Origin:", req.headers.origin);
-  next();
-});
-
 // 🔒 Strict CORS (no normalization, exact match only)
+const allowedOrigins = [
+  "https://creat-r-client.vercel.app",
+];
+
 app.use(cors({
-  origin: function (origin, callback) {
-    console.log("CORS check:", origin);
-
-    if (!origin) return callback(null, true); // allow Postman / server requests
-
-    if (origin === process.env.CORS_ORIGIN) {
-      return callback(null, true);
-    } else {
-      return callback(new Error("Not allowed by CORS"));
-    }
+  origin: (origin, cb) => {
+    if (!origin) return cb(null, true); // Postman/curl
+    if (allowedOrigins.includes(origin)) return cb(null, true);
+    return cb(null, false); // don't throw Error; just disallow
   },
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Ensure all methods are allowed
-  allowedHeaders: ["Content-Type", "Authorization"] // Allow necessary headers
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 }));
 
-// Ensure preflight requests are handled
-app.options("/", (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", process.env.CORS_ORIGIN || "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.setHeader("Access-Control-Allow-Credentials", "true");
-  res.sendStatus(204); // No content
-});
+app.options("*", cors());
+
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
