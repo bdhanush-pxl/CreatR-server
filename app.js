@@ -8,18 +8,20 @@ const app = express()
 
 const allowedOrigins = (process.env.CORS_ORIGIN || "")
   .split(",")
-  .map(s => s.trim())
+  .map((s) => s.trim())
   .filter(Boolean);
 
 const corsOptions = {
   origin: (origin, cb) => {
-    if (!origin) return cb(null, true); // Postman/curl
+    // Allow non-browser clients
+    if (!origin) return cb(null, true);
 
-    // Fail closed if env isn't set (prevents accidental open CORS with credentials)
-    if (allowedOrigins.length === 0) return cb(null, false);
+    const ok = allowedOrigins.includes(origin);
 
-    if (allowedOrigins.includes(origin)) return cb(null, true);
-    return cb(null, false);
+    // TEMP DEBUG (keep until it works)
+    console.log("CORS origin:", origin, "allowed:", ok, "allowedOrigins:", allowedOrigins);
+
+    return cb(null, ok);
   },
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
