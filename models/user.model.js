@@ -37,13 +37,6 @@ const userSchema = new Schema({
         username: String
         }
     ],
-    posts: [
-        {
-            postId: String,
-            postImage: String,
-            postDescription: String,
-        }
-    ],
     refreshToken: {
         type: String,
         default: null
