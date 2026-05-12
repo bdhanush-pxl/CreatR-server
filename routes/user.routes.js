@@ -1,6 +1,6 @@
 import express from 'express';
 import upload from '../middlewares/multer.middleware.js';
-import { registerUser,loginUser,logoutUser,changePassword,changeProfilePicture,refreshAccessToken,getCurrentUser,updateUserDetails,followUser,unfollowUser,getFollowers,deleteUserAccount,searchUsers } from '../controllers/user.controller.js';
+import { registerUser,loginUser,logoutUser,changePassword,changeProfilePicture,refreshAccessToken,getCurrentUser,updateUserDetails,followUser,unfollowUser,getFollowers,deleteUserAccount,searchUsers,updateUsername } from '../controllers/user.controller.js';
 import { verifyJWT } from '../middlewares/auth.middleware.js';
 
 const userRoutes = express.Router();
@@ -43,6 +43,11 @@ userRoutes.route("/current-user").get(
 userRoutes.route("/update-user").put(
     verifyJWT,
     updateUserDetails
+);
+
+userRoutes.route("/update-username").put(
+    verifyJWT,
+    updateUsername
 );
 
 userRoutes.route("/follow").put(

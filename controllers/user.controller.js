@@ -334,6 +334,21 @@ const searchUsers = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, users, "Users fetched successfully"));
 });
 
+const updateUsername = asyncHandler(async (req,res) => {
+    const newUsername = req.body.username;
+    if (!newUsername) {
+        throw new ApiError(400, "Username is required");
+    }
+    const userId = req.user._id;
+    const user = await User.findById(userId);
+    if (!user) {
+        throw new ApiError(404, "User not found");
+    }
+    user.username = newUsername;
+    await user.save({ validateBeforeSave: false });
+    return res.status(200).json(new ApiResponse(200, user, "Username updated successfully"));
+});
+
 export {
     registerUser,
     generateAccessAndRefereshTokens,
@@ -348,5 +363,6 @@ export {
     unfollowUser,
     getFollowers,
     deleteUserAccount,
-    searchUsers
+    searchUsers,
+    updateUsername
 }
