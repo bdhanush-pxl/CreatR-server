@@ -11,7 +11,7 @@ const postSchema = new mongoose.Schema({
     },
     status:{
         type: String,
-        enum: ['draft', 'published', 'archived'],
+        enum: ['draft', 'published'],
         default: 'draft'
     },
     authorId:{
@@ -23,6 +23,8 @@ const postSchema = new mongoose.Schema({
     category: String,
     featuredImage: String,
     publishedAt: Date,
+    createdAt: Date,
+    updatedAt: Date,
     scheduledFor: Date,
     viewCount: Number,
     likeCount: Number,
